@@ -2,7 +2,6 @@
 
 Yapılacaklar:
 
-- Yolov1 model dosyası yazılacak.
-- Detect kodu yazılacak.
+- Yolov1 model ve detect kodu yazılacak.
 - Pip üzerinden kurulum yapılacak.
 - Sahi algoritması eklenecek.
