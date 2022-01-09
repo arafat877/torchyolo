@@ -13,7 +13,5 @@
 Yapılacaklar:
 </h3>
 
-- Yolov1 model ve Detect kodu yazılacak.
-- Detect koduna lnnms algoritmanın eklenecek.
-- Sahi algoritması eklenecek.
-- Deepsort ve sort algoritması eklenecek.
+- [ ] Yolov3 model.py ve detect.py dosyası basitleştirilecek.
+- [ ] Farklı nms algoritmaları test edilecek.
