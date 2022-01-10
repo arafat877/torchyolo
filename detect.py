@@ -20,6 +20,14 @@ import matplotlib.pyplot as plt
 import matplotlib.patches as patches
 from matplotlib.ticker import NullLocator
 
+from torchyolo.nms import (
+    GreedyNMMPostprocess,
+    LSNMSPostprocess,
+    NMMPostprocess,
+    NMSPostprocess,
+    PostprocessPredictions,
+)
+
 
 def detect_directory(model_path, weights_path, img_path, classes, output_path,
                      batch_size=8, img_size=416, n_cpu=8, conf_thres=0.5, nms_thres=0.5):
@@ -82,7 +90,7 @@ def detect_image(model, image, img_size=416, conf_thres=0.5, nms_thres=0.5):
     input_img = transforms.Compose([
         DEFAULT_TRANSFORMS,
         Resize(img_size)])(
-            (image, np.zeros((1, 5))))[0].unsqueeze(0)
+        (image, np.zeros((1, 5))))[0].unsqueeze(0)
 
     if torch.cuda.is_available():
         input_img = input_img.to("cuda")
@@ -90,7 +98,7 @@ def detect_image(model, image, img_size=416, conf_thres=0.5, nms_thres=0.5):
     # Get detections
     with torch.no_grad():
         detections = model(input_img)
-        detections = non_max_suppression(detections, conf_thres, nms_thres)
+        detections = GreedyNMMPostprocess(match_threshold=0.5, match_metric="IOS", class_agnostic=detections)
         detections = rescale_boxes(detections[0], img_size, image.shape[:2])
     return detections.numpy()
 
@@ -130,7 +138,7 @@ def detect(model, dataloader, output_path, conf_thres, nms_thres):
         # Get detections
         with torch.no_grad():
             detections = model(input_imgs)
-            detections = non_max_suppression(detections, conf_thres, nms_thres)
+            detections = GreedyNMMPostprocess(match_threshold=0.5, match_metric="IOS", class_agnostic=detections)
 
         # Store image and detections
         img_detections.extend(detections)
@@ -188,7 +196,6 @@ def _draw_and_save_output_image(image_path, detections, img_size, output_path, c
     colors = [cmap(i) for i in np.linspace(0, 1, n_cls_preds)]
     bbox_colors = random.sample(colors, n_cls_preds)
     for x1, y1, x2, y2, conf, cls_pred in detections:
-
         print(f"\t+ Label: {classes[int(cls_pred)]} | Confidence: {conf.item():0.4f}")
 
         box_w = x2 - x1
@@ -247,10 +254,14 @@ def _create_data_loader(img_path, batch_size, img_size, n_cpu):
 def run():
     print_environment_info()
     parser = argparse.ArgumentParser(description="Detect objects on images.")
-    parser.add_argument("-m", "--model", type=str, default="cfg/yolov3-tiny.cfg", help="Path to model definition file (.cfg)")
-    parser.add_argument("-w", "--weights", type=str, default="weights/yolov3-tiny.weights", help="Path to weights or checkpoint file (.weights or .pth)")
-    parser.add_argument("-i", "--images", type=str, default="tests/data", help="Path to directory with images to inference")
-    parser.add_argument("-c", "--classes", type=str, default="cfg/coco.names", help="Path to classes label file (.names)")
+    parser.add_argument("-m", "--model", type=str, default="cfg/yolov4.cfg",
+                        help="Path to model definition file (.cfg)")
+    parser.add_argument("-w", "--weights", type=str, default="weights/yolov4.weights",
+                        help="Path to weights or checkpoint file (.weights or .pth)")
+    parser.add_argument("-i", "--images", type=str, default="tests/data",
+                        help="Path to directory with images to inference")
+    parser.add_argument("-c", "--classes", type=str, default="cfg/coco.names",
+                        help="Path to classes label file (.names)")
     parser.add_argument("-o", "--output", type=str, default="output", help="Path to output directory")
     parser.add_argument("-b", "--batch_size", type=int, default=1, help="Size of each image batch")
     parser.add_argument("--img_size", type=int, default=416, help="Size of each image dimension for yolo")
