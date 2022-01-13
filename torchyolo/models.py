@@ -301,8 +301,7 @@ def load_model(model_path, weights_path=None):
     :return: Returns model
     :rtype: Darknet
     """
-    device = torch.device("cuda" if torch.cuda.is_available()
-                          else "cpu")  # Select device for inference
+    device = "cpu"  # Select device for inference
     model = Darknet(model_path).to(device)
 
     model.apply(weights_init_normal)
