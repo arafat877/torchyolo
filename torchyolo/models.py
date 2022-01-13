@@ -7,8 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 import numpy as np
 
-from pytorchyolo.utils.parse_config import parse_model_config
-from pytorchyolo.utils.utils import weights_init_normal
+from torchyolo.utils.parse_config import parse_model_config
+from torchyolo.utils.utils import weights_init_normal
 
 
 def create_modules(module_defs):
@@ -301,8 +301,7 @@ def load_model(model_path, weights_path=None):
     :return: Returns model
     :rtype: Darknet
     """
-    device = torch.device("cuda" if torch.cuda.is_available()
-                          else "cpu")  # Select device for inference
+    device = "cpu"  # Select device for inference
     model = Darknet(model_path).to(device)
 
     model.apply(weights_init_normal)
