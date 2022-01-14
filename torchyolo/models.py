@@ -303,7 +303,6 @@ def load_model(model_path, weights_path=None):
     """
     device = "cpu"  # Select device for inference
     model = Darknet(model_path).to(device)
-
     model.apply(weights_init_normal)
 
     # If pretrained weights are specified, start from checkpoint or weight file
