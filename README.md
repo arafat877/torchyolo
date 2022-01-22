@@ -13,5 +13,4 @@
 Yapılacaklar:
 </h3>
 
-- [ ] Yolov3 model.py ve detect.py dosyası basitleştirilecek.
-- [ ] Farklı nms algoritmaları test edilecek.
+- [ ] Yolov1 modelin mimarisi yazılacak.
