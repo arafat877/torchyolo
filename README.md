@@ -1,6 +1,6 @@
 <div align="center">
 <h1>
-  TORCHYOLO : Yolo Modellerin Pytorch Uygulaması
+  TORCHYOLO : Yolov1 Modelin Pytorch Uygulaması
 </h1>
 
 <h4>
@@ -13,4 +13,4 @@
 Yapılacaklar:
 </h3>
 
-- [ ] Yolov1 modelin mimarisi yazılacak.
+- [ ] Yolov1 model mimarisi yazılacak.
